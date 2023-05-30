@@ -1,0 +1,41 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - test
+  - build_docker
+  - deploy
+
+build:
+  stage: build
+  image: node:18
+  script:
+    - yarn install
+  artifacts:
+    paths:
+      - node_modules
+
+test:
+  stage: test
+  image: node:18
+  script:
+    - echo "Running test"
+  artifacts:
+    paths:
+      - node_modules
+
+build_docker:
+  stage: build_docker
+  script:
+    - docker build -t todo-service .
+  artifacts:
+    paths:
+      - node_modules/
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploy todo service to server"
